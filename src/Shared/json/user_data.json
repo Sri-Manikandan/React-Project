@@ -1,23 +1,5 @@
 {
   "users": [
-    {
-      "username": "srimanikandandev",
-      "email": "srimanikandandev@gmail.com",
-      "password": "Poornima290178@",
-      "id": 1
-    },
-    {
-      "username": "sai",
-      "email": "sai@gmail.com",
-      "password": "123",
-      "id": 2
-    },
-    {
-      "username": "manish",
-      "email": "manish@gmail.com",
-      "password": "manish123",
-      "id": 3
-    }
   ],
   "products": [
     {
@@ -25,7 +7,7 @@
       "name": "Rose-In-A-Box Personalized gift box",
       "image": "https://cdn.igp.com/f_auto,q_auto,t_pnopt7prodlp/products/p-rose-in-a-box-personalized-exploding-box-153222-m.jpg",
       "price": "560",
-      "quantity": 3
+      "quantity": 0
     },
     {
       "id": 2,
@@ -53,7 +35,7 @@
       "name": "Mighty Thor Personalized Puzzle",
       "image": "https://cdn.igp.com/f_auto,q_auto,t_pnopt7prodlp/products/p-mighty-thor-personalized-puzzle-190621-m.jpg",
       "price": "499",
-      "quantity": 1
+      "quantity": 0
     },
     {
       "id": 6,
