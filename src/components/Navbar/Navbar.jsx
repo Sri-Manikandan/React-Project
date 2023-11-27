@@ -14,6 +14,8 @@ const Navbar = () => {
     loggedOut();
     Navigate('/');
   }
+
+  console.log("Hello");
   return (
     <div className="navbar">
         <div className="nav-logo">

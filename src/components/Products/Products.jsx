@@ -50,16 +50,16 @@ const Products = () => {
                       
                       await axios.patch(`http://localhost:3001/products/${productToUpdate.id}`, { quantity: updatedQuantity });
 
-                      const responseCart = await axios.get('http://localhost:3001/cart');
-                      const cartItems = responseCart.data;
+                      // const responseCart = await axios.get('http://localhost:3001/cart');
+                      // const cartItems = responseCart.data;
                       
-                      const cartItem = cartItems.find((cart) => cart.id === productToUpdate.id);
+                      // const cartItem = cartItems.find((cart) => cart.id === productToUpdate.id);
 
-                      if (cartItem) {
-                        await axios.put(`http://localhost:3001/cart/${productToUpdate.id}`, { quantity: updatedQuantity });
-                      } else {
-                        await axios.post('http://localhost:3001/cart', { id: productToUpdate.id, quantity: updatedQuantity });
-                      }
+                      // if (cartItem) {
+                      //   await axios.put(`http://localhost:3001/cart/${productToUpdate.id}`, { quantity: updatedQuantity });
+                      // } else {
+                      //   await axios.post('http://localhost:3001/cart', { id: productToUpdate.id, quantity: updatedQuantity });
+                      // }
                     }
                   } catch (error) {
                     console.error(error);
