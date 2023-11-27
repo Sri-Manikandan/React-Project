@@ -32,7 +32,7 @@ const Products = () => {
               />
               <CardContent>
                 <Typography variant="h6">{product.name}</Typography>
-                <Typography color="textSecondary">{product.price}</Typography>
+                <Typography color="textSecondary">${product.price}</Typography>
               </CardContent>
               <CardContent>
                 <Button
@@ -41,8 +41,6 @@ const Products = () => {
                 onClick={async (event) => {
                   try {
                     event.preventDefault();
-                    
-                    // Fetch product data
                     const responseProducts = await axios.get('http://localhost:3001/products');
                     const newProducts = responseProducts.data;
                     const productToUpdate = newProducts.find((productp) => productp.id === product.id);
@@ -50,21 +48,16 @@ const Products = () => {
                     if (productToUpdate) {
                       const updatedQuantity = productToUpdate.quantity + 1;
                       
-                      // Update product quantity in the database
                       await axios.patch(`http://localhost:3001/products/${productToUpdate.id}`, { quantity: updatedQuantity });
 
-                      // Fetch cart data
                       const responseCart = await axios.get('http://localhost:3001/cart');
                       const cartItems = responseCart.data;
                       
-                      // Check if the product is in the cart
                       const cartItem = cartItems.find((cart) => cart.id === productToUpdate.id);
 
                       if (cartItem) {
-                        // If product exists in the cart, update the quantity
                         await axios.put(`http://localhost:3001/cart/${productToUpdate.id}`, { quantity: updatedQuantity });
                       } else {
-                        // If product is not in the cart, add it
                         await axios.post('http://localhost:3001/cart', { id: productToUpdate.id, quantity: updatedQuantity });
                       }
                     }

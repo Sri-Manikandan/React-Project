@@ -1,8 +1,9 @@
 import { Grid, Paper, Avatar, TextField, Button, Typography, Link } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { UserContext } from '../../context/UserProvider';
 const Login = () => {
   const av = { backgroundColor: '#b27764' };
   const te = { margin: '10px 0' ,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'};
@@ -11,6 +12,8 @@ const Login = () => {
   const [users, setUsers] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  const { loggedIn, loggedOut } = useContext(UserContext);
 
   const getusers = async () => {
     try {
@@ -30,9 +33,11 @@ const Login = () => {
     const user = await users.find(user => user.username === username && user.password === password);
     if (user) {
       alert('Login successful!');
+      loggedIn();
       navigate('/');
     } else {
       alert('Invalid credentials');
+      loggedOut();
     }
   };
 
