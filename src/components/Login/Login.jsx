@@ -1,28 +1,40 @@
 import { Grid, Paper, Avatar, TextField, Button, Typography, Link } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 const Login = () => {
   const av = { backgroundColor: '#b27764' };
-  const te = { margin: '10px 0' };
+  const te = { margin: '10px 0' ,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'};
   const btn = { margin: '8px 0' };
 
-  const [username, setUser] = useState('');
+  const [users, setUsers] = useState([]);
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const log = (event) => {
-    event.preventDefault();
-    setUser(username);
-    setPassword(password);
+  const getusers = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/users');
+      setUsers(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const onlog = () => {
-    console.log(username);
-    console.log(password);
-    navigate('/')
-  };
+  useEffect(() => {
+    getusers();
+  },[]);
+  
   const navigate=useNavigate();
+  const onlog = async() => {
+    const user = await users.find(user => user.username === username && user.password === password);
+    if (user) {
+      alert('Login successful!');
+      navigate('/');
+    } else {
+      alert('Invalid credentials');
+    }
+  };
 
   return (
     <div style={{ backgroundImage: 'url("https://wallpapercave.com/wp/wp9352738.jpg")', backgroundSize: 'cover', height: '100vh' }}>
@@ -33,7 +45,7 @@ const Login = () => {
           </Avatar>
           <h2 style={{ paddingBottom: '20px' }}>Login</h2>
           <form style={te}>
-            <TextField label="Username" placeholder="Enter Username" onChange={log} style={{ paddingBottom: '20px' }} required />
+            <TextField label="Username" placeholder="Enter Username" onChange={(e)=> setUsername(e.target.value)} style={{ paddingBottom: '20px' }} required />
             <TextField label="Password" placeholder="Enter Password" type="password" onChange={(e) => setPassword(e.target.value)} style={{ paddingBottom: '20px' }} required />
             <p fullwidth></p>
             <Button type="submit" variant="contained" color="primary" style={btn} onClick={onlog}>
@@ -41,10 +53,10 @@ const Login = () => {
             </Button>
           </form>
           <Typography>
-            <Link href="#">Forget Password ?</Link>
+            <Link href="#">Forget Password?</Link>
           </Typography>
           <Typography>
-            Do you have an account ?<Link href="#" onClick={()=>navigate('/signup')}>Sign Up ?</Link>
+            Do you have an account?<Link onClick={()=>navigate('/signup')}>Sign Up?</Link>
           </Typography>
         </Paper>
       </Grid>

@@ -1,14 +1,19 @@
-// src/Signup.js
 import React, { useState } from 'react';
 import { Button, TextField, Typography, Container, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSignUp = () => {
-    // Implement your sign-up logic here
+    axios.post('http://localhost:3001/users', {
+      username: username,
+      email: email,
+      password: password,
+    })
     console.log('Signing up...');
     navigate('/')
   };
@@ -44,6 +49,7 @@ const Signup = () => {
               fullWidth
               required
               value={username}
+              placeholder='Enter your username'
               onChange={(e) => setUsername(e.target.value)}
             />
             <TextField
@@ -53,6 +59,7 @@ const Signup = () => {
               fullWidth
               required
               type="email"
+              placeholder='Enter your email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -63,6 +70,7 @@ const Signup = () => {
               fullWidth
               required
               type="password"
+              placeholder='Enter your password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />

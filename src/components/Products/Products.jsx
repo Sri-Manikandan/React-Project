@@ -1,24 +1,25 @@
-import React from 'react';
-import { Container, Grid, Card, CardContent, CardMedia, Typography } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Container, Grid, Card, CardContent, CardMedia, Typography, Button } from '@mui/material';
+import axios from 'axios';
 
 const Products = () => {
-  const products = [
-    { id: 1, name: 'Personalized Birthday Chocolate Hamper', image: 'https://cdn.igp.com/f_auto,q_auto,t_pnopt7prodlp/products/p-personalized-birthday-chocolate-hamper-170514-m.jpg', price: '$19.99' },
-    { id: 2, name: 'Anniversary Personalized Heart Pop-Up Box', image: 'https://cdn.igp.com/f_auto,q_auto,t_pnopt7prodlp/products/p-anniversary-personalized-heart-pop-up-box-148951-m.jpg', price: '$29.99' },
-    { id: 3, name: 'Personalized Heart Pendant Chain', image: 'https://cdn.igp.com/f_auto,q_auto,t_pnopt7prodlp/products/p-personalized-heart-pendant-chain-200526-m.jpg', price: '$39.99' },
-    { id: 4, name: 'Rose-In-A-Box Personalized Exploding Box', image: 'https://cdn.igp.com/f_auto,q_auto,t_pnopt7prodlp/products/p-rose-in-a-box-personalized-exploding-box-153222-m.jpg', price: '$39.99' },
-    { id: 5, name: 'Mighty Thor Personalized Puzzle', image: 'https://cdn.igp.com/f_auto,q_auto,t_pnopt7prodlp/products/p-mighty-thor-personalized-puzzle-190621-m.jpg', price: '$39.99' },
-    { id: 6, name: 'Personalized Love Puzzle with Candy', image: 'https://cdn.igp.com/f_auto,q_auto,t_pnopt12prodlp/products/p-personalized-love-puzzle-with-candy-204126-m.jpg', price: '$39.99' },
-    { id: 7, name: 'Personalized Love Puzzle with Candy', image: 'https://cdn.igp.com/f_auto,q_auto,t_pnopt12prodlp/products/p-personalized-love-puzzle-with-candy-204126-m.jpg', price: '$39.99' },
-    { id: 8, name: 'Personalized Love Puzzle with Candy', image: 'https://cdn.igp.com/f_auto,q_auto,t_pnopt12prodlp/products/p-personalized-love-puzzle-with-candy-204126-m.jpg', price: '$39.99' },
-    { id: 9, name: 'Personalized Love Puzzle with Candy', image: 'https://cdn.igp.com/f_auto,q_auto,t_pnopt12prodlp/products/p-personalized-love-puzzle-with-candy-204126-m.jpg', price: '$39.99' },
-  ];
+  const [products, setProducts] = React.useState([]);
+
+  const getProducts = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/products');
+      setProducts(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getProducts();
+  }, []);
 
   return (
+    <div style={{marginTop:'75px'}}>
     <Container>
-      <Typography variant="h1" align="center" gutterBottom>
-      Give the gift of happiness to your loved ones
-      </Typography>
       <Grid container spacing={10}>
         {products.map((product) => (
           <Grid item key={product.id} xs={12} sm={6} md={4}>
@@ -33,11 +34,56 @@ const Products = () => {
                 <Typography variant="h6">{product.name}</Typography>
                 <Typography color="textSecondary">{product.price}</Typography>
               </CardContent>
+              <CardContent>
+                <Button
+                variant="contained"
+                color="primary"
+                onClick={async (event) => {
+                  try {
+                    event.preventDefault();
+                    
+                    // Fetch product data
+                    const responseProducts = await axios.get('http://localhost:3001/products');
+                    const newProducts = responseProducts.data;
+                    const productToUpdate = newProducts.find((productp) => productp.id === product.id);
+
+                    if (productToUpdate) {
+                      const updatedQuantity = productToUpdate.quantity + 1;
+                      
+                      // Update product quantity in the database
+                      await axios.patch(`http://localhost:3001/products/${productToUpdate.id}`, { quantity: updatedQuantity });
+
+                      // Fetch cart data
+                      const responseCart = await axios.get('http://localhost:3001/cart');
+                      const cartItems = responseCart.data;
+                      
+                      // Check if the product is in the cart
+                      const cartItem = cartItems.find((cart) => cart.id === productToUpdate.id);
+
+                      if (cartItem) {
+                        // If product exists in the cart, update the quantity
+                        await axios.put(`http://localhost:3001/cart/${productToUpdate.id}`, { quantity: updatedQuantity });
+                      } else {
+                        // If product is not in the cart, add it
+                        await axios.post('http://localhost:3001/cart', { id: productToUpdate.id, quantity: updatedQuantity });
+                      }
+                    }
+                  } catch (error) {
+                    console.error(error);
+                    // Handle errors here
+                  }
+                }}
+                fullWidth
+              >
+                Add To Cart
+              </Button>
+              </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
     </Container>
+    </div>
   );
 };
 
